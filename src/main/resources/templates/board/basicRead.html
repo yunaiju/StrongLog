@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>게시물 상세조회</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #e3f2fd;
+        }
+
+        .main-container {
+            display: flex;
+            max-width: 1000px;
+            margin: 50px auto;
+        }
+        .category-container {
+            width: 200px;
+            margin-right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            height: fit-content;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .table-container {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .detail-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .answer-form {
+            margin-top: 40px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+        }
+        .comment-section {
+            margin-top: 40px;
+        }
+        .comment {
+            padding: 15px;
+            background: #f1f3f5;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .comment-author {
+            font-weight: bold;
+        }
+        .comment-time {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">logo <span th:text="${nickname}"></span></a>
+        <div class="ms-auto">
+            <div sec:authorize="isAnonymous()">
+                <a class="btn btn-outline-primary me-2" href="/login">로그인</a>
+                <a class="btn btn-primary" href="/signup">회원가입</a>
+            </div>
+            <div sec:authorize="isAuthenticated()">
+                <span class="me-2 text-primary fw-bold" th:text="${#authentication.name}"></span>
+                <a class="btn btn-outline-danger" href="/logout">로그아웃</a>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="main-container">
+        <div class="category-container">
+          <h5 class="text-primary"><span th:text="${nickname}"></span></h5>
+            <br>
+            <h6>카테고리</h6>
+          <ul class="list-group">
+              <li class="list-group-item"><a th:href="@{|/${username}|}">전체글</a></li>
+              <li class="list-group-item"><a th:href="@{|/${username}/types/FEELINGS|}">감정일기</a></li>
+               <li class="list-group-item"><a th:href="@{|/${username}/types/THANKS|}">감사일기</a></li>
+               <li class="list-group-item"><a th:href="@{|/${username}/types/SUGGESTION|}">자기암시</a></li>
+                <li class="list-group-item"><a th:href="@{|/${username}/types/SAYING|}">명언</a></li>
+                <li class="list-group-item"><a th:href="@{|/${username}/types/TRANSCRIPTION|}">필사</a></li>
+              <li class="list-group-item"><a th:href="@{|/${username}/types/DREAM|}">꿈일기</a></li>
+            </ul>
+        </div>
+
+    <div class="table-container">
+        <div class="mb-3">
+            <h6 class="text-center text-secondary" th:text="${article.articleType.displayName}"></h6>
+        </div>
+        <div class="mb-3">
+            <h2 class="text-center" th:text="${article.title}"></h2>
+        </div>
+        <div class="mb-3">
+            <h8 class="text-center text-secondary" th:text="${#temporals.format(article.time, 'yyyy.M.d HH:mm')}"></h8>
+            <span th:if="${#authorization.expression('isAuthenticated()') and #authentication.getPrincipal()?.getUsername() == article.author?.username}">
+                <span th:if="${article.privacy}" th:text="'🔒'"></span>
+                <span th:unless="${article.privacy}" th:text="'🔓'"></span>
+            </span>
+        </div>
+        <hr>
+        <div class="mb-3">
+            <p class="form-control" style="white-space: pre-line; height: 300px;" th:text="${article.content}"></p>
+        </div>
+
+        <div class="mb-3">
+            <span th:if="${#authorization.expression('isAuthenticated()')}">
+                <span th:if="${isLike}">
+                    <form th:action="@{|/${article.author.username}/${article.id}/unlike|}" method="post" th:object="${article}">
+                        <button type="submit" class="btn btn-outline-danger me-2">
+                            ❤️
+                        </button> <span class="mb-0" th:text="${article.countLikes}"></span>
+                    </form>
+                </span>
+                <span th:if="${isLike == null or isLike == false}">
+                    <form th:action="@{|/${article.author.username}/${article.id}/like|}" method="post" th:object="${article}">
+                        <button type="submit" class="btn btn-outline-danger me-2">
+                            ♡
+                        </button> <span class="mb-0" th:text="${article.countLikes}"></span>
+                    </form>
+                </span>
+            </span>
+            <span th:unless="${#authorization.expression('isAuthenticated()')}">
+                ❤️
+            <span class="mb-0" th:text="${article.countLikes}"></span></span>
+        </div>
+
+        <div class="text-center">
+            <a th:href="@{|/${username}|}" class="btn btn-secondary">목록으로</a>
+            <div class="my-3">
+                <div th:if="${#authorization.expression('isAuthenticated()') and #authentication.getPrincipal()?.getUsername() == article.author?.username}">
+                    <a th:href="@{|/${username}/${article.id}/edit|}" class="btn btn-primary" th:text="수정"></a>
+                    <form th:action="@{|/${username}/${article.id}/delete|}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger">삭제</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- 댓글 목록 -->
+        <div class="comment-section">
+            <h5 class="text-secondary">댓글</h5>
+            <div th:each="comment : ${commentList}" class="comment">
+                <div class="comment-author" th:text="${comment.author.nickname}"></div>
+                <div class="comment-time" th:text="${#temporals.format(comment.time, 'yyyy.M.d HH:mm')}"></div>
+                <div class="my-3">
+                    <div th:if="${#authorization.expression('isAuthenticated()') and #authentication.getPrincipal()?.getUsername() == comment.author?.username}"
+                    class="edit-form">
+                        <form th:action="@{|/${article.id}/comment/${comment.id}/edit|}" method="post">
+                            <div class="mb-3">
+                                <textarea name="content" class="form-control" th:text="${comment.content}" rows="4" required></textarea>
+                            </div>
+                            <div class="text-end">
+                                <input type="submit" class="btn btn-outline-primary" value="수정">
+                                <form th:action="@{|/${article.id}/comment/${comment.id}/delete|}" method="post">
+                                    <input type="submit" class="btn btn-outline-primary" value="삭제">
+                                </form>
+                            </div>
+                        </form>
+                    </div>
+                    <div th:unless="${#authorization.expression('isAuthenticated()') and #authentication.getPrincipal()?.getUsername() == comment.author?.username}"
+                         class="comment-content mt-2" th:text="${comment.content}"></div>
+                </div>
+            </div>
+        </div>
+        <!-- 끝 -->
+
+        <div th:if="${#authorization.expression('isAuthenticated()')}">
+        <div class="answer-form mt-5">
+            <form th:action="@{|/${id}/comment/add|}" method="post">
+                <div class="mb-3">
+                    <label for="content" class="form-label" th:text="${#authentication.name}"></label>
+                    <textarea name="content" id="content" class="form-control" rows="6" required></textarea>
+                </div>
+                <div class="text-end">
+                    <input type="submit" class="btn btn-outline-primary" value="등록">
+                </div>
+            </form>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+</body>
+</html>
