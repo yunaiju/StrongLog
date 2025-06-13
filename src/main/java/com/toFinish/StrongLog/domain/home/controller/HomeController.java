@@ -5,7 +5,6 @@ import com.toFinish.StrongLog.domain.board.entity.BasicArticle;
 import com.toFinish.StrongLog.domain.board.service.BasicService;
 import com.toFinish.StrongLog.domain.user.entity.User;
 import com.toFinish.StrongLog.domain.user.service.UserService;
-import jakarta.persistence.Basic;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

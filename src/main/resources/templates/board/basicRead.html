@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>게시물 상세조회</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
     <style>
         body {
             background-color: #e3f2fd;
@@ -64,13 +64,20 @@
     </style>
 </head>
 <body>
+
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">logo <span th:text="${nickname}"></span></a>
+        <div class="navbar-brand" href="/">
+            <a href="/">
+                <img src="/img/logo.png" alt="logo" width="120"><img src="/img/strongLog.png" alt="strongLog" width="210"></a>
+            <span sec:authorize="isAuthenticated()">
+                <a class="btn btn-outline-primary me-2" th:href="@{|/${#authentication.name}/blog|}">내 블로그</a>
+            </span>
+        </div>
         <div class="ms-auto">
             <div sec:authorize="isAnonymous()">
                 <a class="btn btn-outline-primary me-2" href="/login">로그인</a>
-                <a class="btn btn-primary" href="/signup">회원가입</a>
+                <a class="btn btn-primary" href="/register">회원가입</a>
             </div>
             <div sec:authorize="isAuthenticated()">
                 <span class="me-2 text-primary fw-bold" th:text="${#authentication.name}"></span>
@@ -79,6 +86,7 @@
         </div>
     </div>
 </nav>
+
 <div class="container">
     <div class="main-container">
         <div class="category-container">
@@ -86,13 +94,13 @@
             <br>
             <h6>카테고리</h6>
           <ul class="list-group">
-              <li class="list-group-item"><a th:href="@{|/${username}|}">전체글</a></li>
-              <li class="list-group-item"><a th:href="@{|/${username}/types/FEELINGS|}">감정일기</a></li>
-               <li class="list-group-item"><a th:href="@{|/${username}/types/THANKS|}">감사일기</a></li>
-               <li class="list-group-item"><a th:href="@{|/${username}/types/SUGGESTION|}">자기암시</a></li>
-                <li class="list-group-item"><a th:href="@{|/${username}/types/SAYING|}">명언</a></li>
-                <li class="list-group-item"><a th:href="@{|/${username}/types/TRANSCRIPTION|}">필사</a></li>
-              <li class="list-group-item"><a th:href="@{|/${username}/types/DREAM|}">꿈일기</a></li>
+              <li class="list-group-item"><a th:href="@{|/${username}/blog|}">전체글</a></li>
+              <li class="list-group-item"><a th:href="@{|/${username}/blog/types/FEELINGS|}">감정일기</a></li>
+               <li class="list-group-item"><a th:href="@{|/${username}/blog/types/THANKS|}">감사일기</a></li>
+               <li class="list-group-item"><a th:href="@{|/${username}/blog/types/SUGGESTION|}">자기암시</a></li>
+                <li class="list-group-item"><a th:href="@{|/${username}/blog/types/SAYING|}">명언</a></li>
+                <li class="list-group-item"><a th:href="@{|/${username}/blog/types/TRANSCRIPTION|}">필사</a></li>
+              <li class="list-group-item"><a th:href="@{|/${username}/blog/types/DREAM|}">꿈일기</a></li>
             </ul>
         </div>
 
@@ -118,14 +126,14 @@
         <div class="mb-3">
             <span th:if="${#authorization.expression('isAuthenticated()')}">
                 <span th:if="${isLike}">
-                    <form th:action="@{|/${article.author.username}/${article.id}/unlike|}" method="post" th:object="${article}">
+                    <form th:action="@{|/${article.author.username}/blog/${article.id}/unlike|}" method="post" th:object="${article}">
                         <button type="submit" class="btn btn-outline-danger me-2">
                             ❤️
                         </button> <span class="mb-0" th:text="${article.countLikes}"></span>
                     </form>
                 </span>
                 <span th:if="${isLike == null or isLike == false}">
-                    <form th:action="@{|/${article.author.username}/${article.id}/like|}" method="post" th:object="${article}">
+                    <form th:action="@{|/${article.author.username}/blog/${article.id}/like|}" method="post" th:object="${article}">
                         <button type="submit" class="btn btn-outline-danger me-2">
                             ♡
                         </button> <span class="mb-0" th:text="${article.countLikes}"></span>
@@ -138,11 +146,11 @@
         </div>
 
         <div class="text-center">
-            <a th:href="@{|/${username}|}" class="btn btn-secondary">목록으로</a>
+            <a th:href="@{|/${username}/blog|}" class="btn btn-secondary">목록으로</a>
             <div class="my-3">
                 <div th:if="${#authorization.expression('isAuthenticated()') and #authentication.getPrincipal()?.getUsername() == article.author?.username}">
-                    <a th:href="@{|/${username}/${article.id}/edit|}" class="btn btn-primary" th:text="수정"></a>
-                    <form th:action="@{|/${username}/${article.id}/delete|}" method="post" class="d-inline">
+                    <a th:href="@{|/${username}/blog/${article.id}/edit|}" class="btn btn-primary" th:text="수정"></a>
+                    <form th:action="@{|/${username}/blog/${article.id}/delete|}" method="post" class="d-inline">
                         <button type="submit" class="btn btn-danger">삭제</button>
                     </form>
                 </div>

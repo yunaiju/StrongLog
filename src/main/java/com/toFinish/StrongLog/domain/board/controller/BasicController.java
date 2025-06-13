@@ -32,7 +32,7 @@ public class BasicController {
     private final ArticleLikeService articleLikeService;
 
     // 전체 게시물 조회
-    @GetMapping("/{username}")
+    @GetMapping("/{username}/blog")
     public String articles(@PathVariable("username") String username, Model model, Principal principal) {
         User author = this.userService.getUser(username);
 
@@ -49,14 +49,14 @@ public class BasicController {
     }
 
     // 게시물 등록
-    @GetMapping("/{username}/{articleType}/add")
+    @GetMapping("/{username}/blog/{articleType}/add")
     public String addArticle(@PathVariable("username") String username, @PathVariable("articleType") ArticleType articleType,
                              BasicForm basicForm) {
         basicForm.setArticleType(articleType);
         return "board/basicAddForm";
     }
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/{username}/{articleType}/add")
+    @PostMapping("/{username}/blog/{articleType}/add")
     public String addArticle(@PathVariable("username")String username, @PathVariable("articleType") ArticleType articleType,
                              @Valid BasicForm basicForm, BindingResult bindingResult,
                              Principal principal, Model model) {
@@ -66,11 +66,11 @@ public class BasicController {
         model.addAttribute("user",user);
         Long id = this.basicService.addArticle(basicForm.getArticleType(), basicForm.getTitle(), basicForm.getContent(), user, basicForm.isPrivacy());
 
-        return "redirect:/{username}/"+id;
+        return "redirect:/{username}/blog/"+id;
     }
 
     // 카테고리별 전체 게시물 조회
-    @GetMapping("/{username}/types/{articleType}")
+    @GetMapping("/{username}/blog/types/{articleType}")
     public String articlesByType(@PathVariable("username")String username, @PathVariable("articleType") ArticleType articleType
                              , Model model, Principal principal) {
         User author = this.userService.getUser(username);
@@ -90,7 +90,7 @@ public class BasicController {
     }
 
     // 개별 게시물 조회
-    @GetMapping("/{username}/{id}")
+    @GetMapping("/{username}/blog/{id}")
     public String article(@PathVariable("username")String username, @PathVariable("id")Long id, Model model,
                           @Nullable Principal principal) {
         BasicArticle article = this.basicService.getArticle(id);
@@ -111,7 +111,7 @@ public class BasicController {
         return "board/basicRead";
     }
     // 좋아요
-    @PostMapping("/{username}/{id}/like")
+    @PostMapping("/{username}/blog/{id}/like")
     public String likePost(@PathVariable("username") String username, @PathVariable("id") Long id, Principal principal,
                            Model model) {
         User user = this.userService.getUser(principal.getName());
@@ -120,10 +120,10 @@ public class BasicController {
         User author = this.userService.getUser(username);
         model.addAttribute("nickname",author.getNickname());
 
-        return "redirect:/{username}/{id}";
+        return "redirect:/{username}/blog/{id}";
     }
     // 좋아요 취소
-    @PostMapping("/{username}/{id}/unlike")
+    @PostMapping("/{username}/blog/{id}/unlike")
     public String unLikePost(@PathVariable("username") String username, @PathVariable("id") Long id, Principal principal,
                              Model model) {
         User user = this.userService.getUser(principal.getName());
@@ -132,12 +132,12 @@ public class BasicController {
         User author = this.userService.getUser(username);
         model.addAttribute("nickname",author.getNickname());
 
-        return "redirect:/{username}/{id}";
+        return "redirect:/{username}/blog/{id}";
     }
 
 
     // 개별 게시물 수정
-    @GetMapping("/{username}/{id}/edit")
+    @GetMapping("/{username}/blog/{id}/edit")
     public String editArticle(@PathVariable("username")String username, @PathVariable("id")Long id,
                               BasicForm basicForm, Principal principal) {
         BasicArticle article = this.basicService.getArticle(id);
@@ -151,7 +151,7 @@ public class BasicController {
 
         return "board/basicAddForm";
     }
-    @PostMapping("/{username}/{id}/edit")
+    @PostMapping("/{username}/blog/{id}/edit")
     public String editArticle(@PathVariable("username")String username, @PathVariable("id")Long id,
                               @Valid BasicForm basicForm, BindingResult bindingResult, Principal principal,
                               Model model) {
@@ -167,11 +167,11 @@ public class BasicController {
         User author = this.userService.getUser(username);
         model.addAttribute("nickname",author.getNickname());
 
-        return "redirect:/{username}/{id}";
+        return "redirect:/{username}/blog/{id}";
     }
 
     // 개별 게시물 삭제
-    @PostMapping("/{username}/{id}/delete")
+    @PostMapping("/{username}/blog/{id}/delete")
     public String deleteArticle(@PathVariable("username")String username, @PathVariable("id")Long id, Model model) {
         BasicArticle article = this.basicService.getArticle(id);
 
@@ -179,6 +179,6 @@ public class BasicController {
         model.addAttribute("nickname",author.getNickname());
 
         this.basicService.deleteArticle(article);
-        return "redirect:/{username}";
+        return "redirect:/{username}/blog";
     }
 }

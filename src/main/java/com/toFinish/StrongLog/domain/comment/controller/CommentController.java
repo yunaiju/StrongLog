@@ -1,6 +1,5 @@
 package com.toFinish.StrongLog.domain.comment.controller;
 
-import com.toFinish.StrongLog.domain.board.dto.BasicForm;
 import com.toFinish.StrongLog.domain.board.entity.BasicArticle;
 import com.toFinish.StrongLog.domain.board.service.BasicService;
 import com.toFinish.StrongLog.domain.comment.dto.CommentForm;
@@ -8,17 +7,14 @@ import com.toFinish.StrongLog.domain.comment.entity.Comment;
 import com.toFinish.StrongLog.domain.comment.service.CommentService;
 import com.toFinish.StrongLog.domain.user.entity.User;
 import com.toFinish.StrongLog.domain.user.service.UserService;
-import jakarta.persistence.Basic;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.server.ResponseStatusException;
-import org.yaml.snakeyaml.tokens.CommentToken;
 
 import java.security.Principal;
 
@@ -39,7 +35,7 @@ public class CommentController {
         this.commentService.addComment(commentForm.getContent(), user, article);
 
         String username = article.getAuthor().getUsername().toString();
-        return "redirect:/"+username+"/"+id;
+        return "redirect:/"+username+"/blog/"+id;
     }
 
     @PostMapping("/{id}/comment/{commentId}/edit")
@@ -57,7 +53,7 @@ public class CommentController {
         this.commentService.editComment(comment, commentForm.getContent());
 
         String username = article.getAuthor().getUsername().toString();
-        return "redirect:/"+username+"/"+id;
+        return "redirect:/"+username+"/blog/"+id;
     }
 
     @PostMapping("/{id}/comment/{commentId}/delete")
@@ -72,6 +68,6 @@ public class CommentController {
         this.commentService.deleteComment(comment);
 
         String username = article.getAuthor().getUsername().toString();
-        return "redirect:/"+username+"/"+id;
+        return "redirect:/"+username+"/blog/"+id;
     }
 }
