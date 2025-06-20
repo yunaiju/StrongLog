@@ -13,6 +13,7 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -33,14 +34,15 @@ public class BasicController {
 
     // 전체 게시물 조회
     @GetMapping("/{username}/blog")
-    public String articles(@PathVariable("username") String username, Model model, Principal principal) {
+    public String articles(@PathVariable("username") String username, Model model, Principal principal,
+                           @RequestParam(value = "page", defaultValue = "0") int page) {
         User author = this.userService.getUser(username);
 
         if(principal != null && username.equals(principal.getName())) {
-            List<BasicArticle> articles = this.basicService.getArticlesByAuthor(author);
+            Page<BasicArticle> articles = this.basicService.getArticlesByAuthor(page, author);
             model.addAttribute("articles", articles);
         } else {
-            List<BasicArticle> articles = this.basicService.getPublicArticleByAuthor(author);
+            Page<BasicArticle> articles = this.basicService.getPublicArticleByAuthor(page, author);
             model.addAttribute("articles", articles);
         }
         model.addAttribute("nickname",author.getNickname());
@@ -72,14 +74,14 @@ public class BasicController {
     // 카테고리별 전체 게시물 조회
     @GetMapping("/{username}/blog/types/{articleType}")
     public String articlesByType(@PathVariable("username")String username, @PathVariable("articleType") ArticleType articleType
-                             , Model model, Principal principal) {
+                             , Model model, Principal principal, @RequestParam(value="page",defaultValue = "0")int page) {
         User author = this.userService.getUser(username);
 
         if(principal != null && username.equals(principal.getName())) {
-            List<BasicArticle> articles = this.basicService.getArticlesByAuthorAndArticleType(author, articleType);
+            Page<BasicArticle> articles = this.basicService.getArticlesByAuthorAndArticleType(page, author, articleType);
             model.addAttribute("articles", articles);
         } else {
-            List<BasicArticle> articles = this.basicService.getPublicArticlesByAuthorAndArticleType(author, articleType);
+            Page<BasicArticle> articles = this.basicService.getPublicArticlesByAuthorAndArticleType(page, author, articleType);
             model.addAttribute("articles", articles);
         }
 

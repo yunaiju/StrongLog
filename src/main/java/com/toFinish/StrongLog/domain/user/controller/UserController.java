@@ -35,6 +35,8 @@ public class UserController {
     @PostMapping("/register")
     public String register(@Valid RegisterForm registerForm, BindingResult bindingResult) {
 
+        if(bindingResult.hasErrors()) return "user/registerForm";
+
         try {
             userService.createUser(registerForm.getUsername(), registerForm.getPassword(), registerForm.getPasswordCheck(),
                     registerForm.getNickname());
@@ -45,9 +47,6 @@ public class UserController {
         } catch (DuplicateNicknameException e) {
             bindingResult.rejectValue("nickname","duplicate", e.getMessage());
         }
-
-        if(bindingResult.hasErrors()) return "user/registerForm";
-
         return "redirect:/";
     }
 

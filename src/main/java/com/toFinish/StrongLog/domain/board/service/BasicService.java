@@ -5,8 +5,13 @@ import com.toFinish.StrongLog.domain.board.repository.BasicRepository;
 import com.toFinish.StrongLog.domain.global.exception.DataNotFoundException;
 import com.toFinish.StrongLog.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,15 +32,39 @@ public class BasicService {
     public List<BasicArticle> getArticlesByAuthor(User author) {
         return this.basicRepository.findAllByAuthor(author);
     }
+    public Page<BasicArticle> getArticlesByAuthor(int page, User author) {
+        List<Sort.Order> sorts = new ArrayList();
+        sorts.add(Sort.Order.desc("time"));
+        Pageable pageable = PageRequest.of(page,10, Sort.by(sorts));
+        return this.basicRepository.findAllByAuthor(pageable, author);
+    }
 
     public List<BasicArticle> getPublicArticleByAuthor(User author) { return this.basicRepository.findAllByAuthorAndPrivacyFalse(author); }
+    public Page<BasicArticle> getPublicArticleByAuthor(int page, User author) {
+        List<Sort.Order> sorts = new ArrayList();
+        sorts.add(Sort.Order.desc("time"));
+        Pageable pageable = PageRequest.of(page,10, Sort.by(sorts));
+        return this.basicRepository.findAllByAuthorAndPrivacyFalse(pageable, author);
+    }
 
     public List<BasicArticle> getArticlesByAuthorAndArticleType(User author, ArticleType articleType) {
         return this.basicRepository.findAllByAuthorAndArticleType(author, articleType);
     }
+    public Page<BasicArticle> getArticlesByAuthorAndArticleType(int page, User author, ArticleType articleType) {
+        List<Sort.Order> sorts = new ArrayList();
+        sorts.add(Sort.Order.desc("time"));
+        Pageable pageable = PageRequest.of(page,10, Sort.by(sorts));
+        return this.basicRepository.findAllByAuthorAndArticleType(pageable, author, articleType);
+    }
 
     public List<BasicArticle> getPublicArticlesByAuthorAndArticleType(User author, ArticleType articleType) {
         return this.basicRepository.findAllByAuthorAndArticleTypeAndPrivacyFalse(author, articleType);
+    }
+    public Page<BasicArticle> getPublicArticlesByAuthorAndArticleType(int page, User author, ArticleType articleType) {
+        List<Sort.Order> sorts = new ArrayList();
+        sorts.add(Sort.Order.desc("time"));
+        Pageable pageable = PageRequest.of(page,10, Sort.by(sorts));
+        return this.basicRepository.findAllByAuthorAndArticleTypeAndPrivacyFalse(pageable, author, articleType);
     }
 
     public Long addArticle(ArticleType articleType, String title, String content, User author, boolean privacy) {
@@ -59,11 +88,11 @@ public class BasicService {
     }
 
     public List<BasicArticle> getPopularArticles() {
-        return this.basicRepository.findTop20ByPrivacyFalseOrderByTimeDesc();
+        return this.basicRepository.findTop10ByPrivacyFalseOrderByCountLikesDescTimeDesc();
     }
 
     public List<BasicArticle> getPopularArticlesByType(ArticleType articleType) {
-        return this.basicRepository.findTop10ByArticleTypeAndPrivacyFalseOrderByTimeDesc(articleType);
+        return this.basicRepository.findTop10ByArticleTypeAndPrivacyFalseOrderByCountLikesDescTimeDesc(articleType);
     }
 
 }

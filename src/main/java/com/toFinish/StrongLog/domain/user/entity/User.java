@@ -17,8 +17,6 @@ public class User {
 
     private String password;
 
-    private String passwordCheck;
-
     @Column(unique = true)
     private String nickname;
 

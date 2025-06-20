@@ -40,7 +40,7 @@
         <div class="category-container">
             <br>
             <ul class="list-group d-flex flex-row flex-wrap">
-                <li class="list-group-item me-2"><a th:href="@{/}">전체글</a></li>
+                <li class="list-group-item me-2"><a th:href="@{/}">인기글</a></li>
                 <li class="list-group-item me-2"><a th:href="@{/types/FEELINGS}">감정일기</a></li>
                 <li class="list-group-item me-2"><a th:href="@{/types/THANKS}">감사일기</a></li>
                 <li class="list-group-item me-2"><a th:href="@{/types/SUGGESTION}">자기암시</a></li>
@@ -54,7 +54,7 @@
         <div class="table-container">
             <br>
             <div th:if="${articleType}==null">
-                <h4 class="text-center">전체글</h4>
+                <h4 class="text-center">인기글</h4>
             </div>
             <div th:unless="${articleType}==null">
                 <h4 class="text-center"><span th:text="${articleType.displayName}"></span></h4>
