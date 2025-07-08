@@ -3,6 +3,7 @@ import com.toFinish.StrongLog.domain.board.ArticleType;
 import com.toFinish.StrongLog.domain.board.entity.BasicArticle;
 import com.toFinish.StrongLog.domain.board.repository.BasicRepository;
 import com.toFinish.StrongLog.domain.global.exception.DataNotFoundException;
+import com.toFinish.StrongLog.domain.global.exception.InvalidFormException;
 import com.toFinish.StrongLog.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -36,7 +37,7 @@ public class BasicService {
         List<Sort.Order> sorts = new ArrayList();
         sorts.add(Sort.Order.desc("time"));
         Pageable pageable = PageRequest.of(page,10, Sort.by(sorts));
-        return this.basicRepository.findAllByAuthor(pageable, author);
+        return this.basicRepository.findAllByAuthor(author, pageable);
     }
 
     public List<BasicArticle> getPublicArticleByAuthor(User author) { return this.basicRepository.findAllByAuthorAndPrivacyFalse(author); }
@@ -44,7 +45,7 @@ public class BasicService {
         List<Sort.Order> sorts = new ArrayList();
         sorts.add(Sort.Order.desc("time"));
         Pageable pageable = PageRequest.of(page,10, Sort.by(sorts));
-        return this.basicRepository.findAllByAuthorAndPrivacyFalse(pageable, author);
+        return this.basicRepository.findAllByAuthorAndPrivacyFalse(author, pageable);
     }
 
     public List<BasicArticle> getArticlesByAuthorAndArticleType(User author, ArticleType articleType) {
@@ -54,7 +55,7 @@ public class BasicService {
         List<Sort.Order> sorts = new ArrayList();
         sorts.add(Sort.Order.desc("time"));
         Pageable pageable = PageRequest.of(page,10, Sort.by(sorts));
-        return this.basicRepository.findAllByAuthorAndArticleType(pageable, author, articleType);
+        return this.basicRepository.findAllByAuthorAndArticleType(author, articleType, pageable);
     }
 
     public List<BasicArticle> getPublicArticlesByAuthorAndArticleType(User author, ArticleType articleType) {
@@ -64,10 +65,17 @@ public class BasicService {
         List<Sort.Order> sorts = new ArrayList();
         sorts.add(Sort.Order.desc("time"));
         Pageable pageable = PageRequest.of(page,10, Sort.by(sorts));
-        return this.basicRepository.findAllByAuthorAndArticleTypeAndPrivacyFalse(pageable, author, articleType);
+        return this.basicRepository.findAllByAuthorAndArticleTypeAndPrivacyFalse(author, articleType, pageable);
     }
 
     public Long addArticle(ArticleType articleType, String title, String content, User author, boolean privacy) {
+        if (title == null || title.trim().isEmpty()) {
+            throw new InvalidFormException("제목은 필수입니다.");
+        }
+        if (content == null || content.trim().isEmpty()) {
+            throw new InvalidFormException("내용은 필수입니다.");
+        }
+
         BasicArticle article = new BasicArticle(articleType, title, content, author, LocalDateTime.now(), privacy);
         this.basicRepository.save(article);
 
@@ -75,16 +83,26 @@ public class BasicService {
     }
 
     public void editArticle(BasicArticle article, ArticleType articleType, String title, String content, boolean privacy) {
+        if (title == null || title.trim().isEmpty()) {
+            throw new InvalidFormException("제목은 필수입니다.");
+        }
+        if (content == null || content.trim().isEmpty()) {
+            throw new InvalidFormException("내용은 필수입니다.");
+        }
+
         article.updateArticle(articleType, title, content, privacy);
         this.basicRepository.save(article);
     }
 
     public void deleteArticle(BasicArticle article) {
-        this.basicRepository.delete(article);
-    }
+        if(article.getId()==null) {
+            throw new DataNotFoundException("존재하지 않는 게시글");
+        }
 
-    public boolean IsMyArticle() {
-        return true;
+        BasicArticle normalArticle = basicRepository.findById(article.getId())
+                .orElseThrow(()-> new DataNotFoundException("존재하지 않는 게시글"));
+        
+        this.basicRepository.delete(normalArticle);
     }
 
     public List<BasicArticle> getPopularArticles() {

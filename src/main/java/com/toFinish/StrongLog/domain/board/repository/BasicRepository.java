@@ -15,16 +15,16 @@ import java.util.List;
 @Repository
 public interface BasicRepository extends JpaRepository<BasicArticle, Long> {
     List<BasicArticle> findAllByAuthor(User author);
-    Page<BasicArticle> findAllByAuthor(Pageable pageable, User author);
+    Page<BasicArticle> findAllByAuthor(User author, Pageable pageable);
 
     List<BasicArticle> findAllByAuthorAndPrivacyFalse(User author);
-    Page<BasicArticle> findAllByAuthorAndPrivacyFalse(Pageable pageable, User author);
+    Page<BasicArticle> findAllByAuthorAndPrivacyFalse(User author, Pageable pageable);
 
     List<BasicArticle> findAllByAuthorAndArticleType(User author, ArticleType articleType);
-    Page<BasicArticle> findAllByAuthorAndArticleType(Pageable pageable, User author, ArticleType articleType);
+    Page<BasicArticle> findAllByAuthorAndArticleType(User author, ArticleType articleType, Pageable pageable);
 
     List<BasicArticle> findAllByAuthorAndArticleTypeAndPrivacyFalse(User author, ArticleType articleType);
-    Page<BasicArticle> findAllByAuthorAndArticleTypeAndPrivacyFalse(Pageable pageable, User author, ArticleType articleType);
+    Page<BasicArticle> findAllByAuthorAndArticleTypeAndPrivacyFalse(User author, ArticleType articleType, Pageable pageable);
 
     List<BasicArticle> findTop10ByPrivacyFalseOrderByCountLikesDescTimeDesc();
 

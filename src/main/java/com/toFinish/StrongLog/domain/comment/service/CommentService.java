@@ -4,6 +4,7 @@ import com.toFinish.StrongLog.domain.board.entity.BasicArticle;
 import com.toFinish.StrongLog.domain.comment.entity.Comment;
 import com.toFinish.StrongLog.domain.comment.repository.CommentRepository;
 import com.toFinish.StrongLog.domain.global.exception.DataNotFoundException;
+import com.toFinish.StrongLog.domain.global.exception.InvalidFormException;
 import com.toFinish.StrongLog.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,17 +27,29 @@ public class CommentService {
         }
     }
 
-    public void addComment(String content, User author, BasicArticle article) {
+    public Comment addComment(String content, User author, BasicArticle article) {
+        if (content == null || content.trim().isEmpty()) {
+            throw new InvalidFormException("내용은 필수입니다.");
+        }
+
         Comment comment = new Comment(content, author, article, LocalDateTime.now());
-        this.commentRepository.save(comment);
+        return this.commentRepository.save(comment);
     }
 
     public void editComment(Comment comment, String content) {
+        if (content == null || content.trim().isEmpty()) {
+            throw new InvalidFormException("내용은 필수입니다.");
+        }
+
         comment.updateComment(content);
         this.commentRepository.save(comment);
     }
 
     public void deleteComment(Comment comment) {
+        if(comment.getId()==null) {
+            throw new DataNotFoundException("존재하지 않는 댓글");
+        }
+        
         this.commentRepository.delete(comment);
     }
 
