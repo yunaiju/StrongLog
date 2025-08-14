@@ -33,9 +33,6 @@ public class BasicArticle {
 
     private int countLikes = 0;
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
-    private List<Comment> commentList;
-
     public BasicArticle(ArticleType articleType, String title, String content, User author, LocalDateTime time, boolean privacy) {
         this.articleType = articleType;
         this.title = title;

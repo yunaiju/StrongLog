@@ -47,6 +47,9 @@ public class UserController {
         } catch (DuplicateNicknameException e) {
             bindingResult.rejectValue("nickname","duplicate", e.getMessage());
         }
+
+        if(bindingResult.hasErrors()) return "user/registerForm";
+
         return "redirect:/";
     }
 
