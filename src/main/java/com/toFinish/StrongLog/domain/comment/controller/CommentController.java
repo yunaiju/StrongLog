@@ -61,7 +61,7 @@ public class CommentController {
         BasicArticle article = this.basicService.getArticle(id);
         Comment comment = this.commentService.getComment(commentId);
 
-        if(!article.getAuthor().getUsername().equals(principal.getName())) {
+        if(!comment.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"삭제 권한이 없습니다.");
         }
 

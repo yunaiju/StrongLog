@@ -166,20 +166,21 @@
                 <div class="my-3">
                     <div th:if="${#authorization.expression('isAuthenticated()') and #authentication.getPrincipal()?.getUsername() == comment.author?.username}"
                     class="edit-form">
-                        <form th:action="@{|/${article.id}/comment/${comment.id}/edit|}" method="post">
+                        <div class="text-end">
+                        <form class="d-inline" th:action="@{|/${article.id}/comment/${comment.id}/edit|}" method="post">
                             <div class="mb-3">
                                 <textarea name="content" class="form-control" th:text="${comment.content}" rows="4" required></textarea>
                             </div>
-                            <div class="text-end">
-                                <input type="submit" class="btn btn-outline-primary" value="수정">
-                                <form th:action="@{|/${article.id}/comment/${comment.id}/delete|}" method="post">
-                                    <input type="submit" class="btn btn-outline-primary" value="삭제">
-                                </form>
-                            </div>
+                            <input type="submit" class="btn btn-outline-primary" value="수정">
                         </form>
+                        <form class="d-inline" th:action="@{|/${article.id}/comment/${comment.id}/delete|}" method="post">
+                            <input type="submit" class="btn btn-outline-primary" value="삭제">
+                        </form>
+                        </div>
                     </div>
-                    <div th:unless="${#authorization.expression('isAuthenticated()') and #authentication.getPrincipal()?.getUsername() == comment.author?.username}"
-                         class="comment-content mt-2" th:text="${comment.content}"></div>
+                        <div th:unless="${#authorization.expression('isAuthenticated()') and #authentication.getPrincipal()?.getUsername() == comment.author?.username}"
+                             class="comment-content mt-2" th:text="${comment.content}"></div>
+
                 </div>
             </div>
         </div>
