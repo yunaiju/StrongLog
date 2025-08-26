@@ -10,7 +10,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - db_data_strongLog:/var/lib/mysql
+      - db_data_stronglog:/var/lib/mysql
 
   app:
     image: nyejoo/spring-mariadb-nginx:strongLog
@@ -45,4 +45,4 @@ services:
       - ./certbot/www:/var/www/certbot
 
 volumes:
-  db_data_strongLog:
+  db_data_stronglog:
