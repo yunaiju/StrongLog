@@ -19,13 +19,17 @@
 - Framework : SpringBoot3, Spring Web, Spring Data JPA, Spring Security, Spring Validation
 - Template Engine : Thymeleaf, ChatGPT
 - Database : MariaDB, JPA, JPQL
-- Deployment / DevOps : AWS LightSail (Amazon Linux 2023), Ningx, HTTPS (Let’s Encrypt), Custom Domain 연결
-- Security / Session : Spring Session, HTTPS (SSL 인증서)
+- Deployment / DevOps : AWS LightSail (Amazon Linux 2023), Docker, Docker Compose, Nginx
+- HTTPS / SSL : Certbot (Let’s Encrypt)
 - Code Test : Junit5
 - Version Control : Git / GitHub
-  
-#### Project Architecture
-<img width="1216" height="779" alt="image" src="https://github.com/user-attachments/assets/0a1d78f4-5929-43f1-a8a6-2ffc39fafbdc" />
+- CI/CD : GitHub, GitHub Actions
+
+### ERD
+<img width="1688" height="1100" alt="stronglog erd" src="https://github.com/user-attachments/assets/7d714936-afe3-45a1-a690-0e8617dfab63" />
+
+### Project Architecture
+<img width="1112" height="762" alt="stronglog architecture" src="https://github.com/user-attachments/assets/6065f4a7-c3a8-4617-922f-dceb788b3aff" />
 
 ### 주요기능
 #### 로그인/로그아웃
@@ -81,6 +85,7 @@
 - Authentication ⭕
 - 게시글에 좋아요 on/off
 
+### 시연 영상 👉 https://youtu.be/hF6xS0g-w_Q
 
 
 
